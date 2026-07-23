@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAKI SUZUKI — Web Designer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  /* ---------- hero (home page only) ---------- */
+  .hero{
+    height:100svh;
+    display:flex; flex-direction:column; justify-content:center;
+    padding: 0 clamp(1.2rem,4vw,4rem);
+    position:relative;
+  }
+  .reveal-layer{
+    position:absolute; inset:0; z-index:2; pointer-events:none; overflow:hidden;
+  }
+  .reveal-image{
+    position:absolute; inset:0; width:100%; height:100%;
+    clip-path: circle(0px at 50% 50%);
+    background-image: url("924476.jpg");
+    background-size: cover;
+    background-position: center;
+    filter: contrast(1.1) saturate(1.05);
+    will-change: clip-path;
+  }
+  .reveal-image::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      radial-gradient(circle at 25% 20%, rgba(12,12,11,0.15), transparent 55%),
+      linear-gradient(155deg, rgba(12,12,11,0.25) 0%, rgba(12,12,11,0.55) 100%);
+  }
+  .reveal-image::after{
+    content:"";
+    position:absolute; inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity:0.18; mix-blend-mode:overlay;
+  }
+  .hero-title, .eyebrow, .hero-sub, .scroll-cue{ position:relative; z-index:3; }
+  .hero-title{
+    font-family:var(--display); font-weight:600;
+    font-size:clamp(3.4rem, 13vw, 11rem);
+    line-height:0.86; letter-spacing:-0.01em;
+  }
+  .hero-title .line{display:block; overflow:hidden;}
+  .hero-title .line span{display:inline-block; will-change:transform;}
+  .hero-title .italic{font-style:italic; font-weight:300; color:var(--muted);}
+  .hero-sub{
+    font-family:var(--mono); font-size:clamp(0.85rem,1.1vw,1rem);
+    max-width:34ch; margin-top:1.8rem; color:var(--muted); line-height:1.7;
+  }
+  .scroll-cue{
+    position:absolute; bottom:2.4rem; left:clamp(1.2rem,4vw,4rem);
+    display:flex; align-items:center; gap:0.7rem;
+    font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted);
+  }
+  .scroll-cue .bar{width:1px; height:2rem; background:var(--line); position:relative; overflow:hidden;}
+  .scroll-cue .bar::after{
+    content:""; position:absolute; top:-100%; left:0; width:100%; height:100%;
+    background:var(--fg); animation:scrollLine 1.8s ease-in-out infinite;
+  }
+  @keyframes scrollLine{ 0%{top:-100%;} 50%{top:0%;} 100%{top:100%;} }
+
+  .statement{
+    min-height:100svh;
+    display:flex; flex-direction:column; justify-content:center; gap:2rem;
+    padding: 6rem clamp(1.2rem,4vw,4rem);
+  }
+  .statement-text{
+    font-family:var(--display); font-weight:300;
+    font-size:clamp(1.7rem,4.5vw,3.6rem);
+    line-height:1.28; max-width:20ch; opacity:0.3;
+  }
+  .statement-text em{font-style:italic; color:var(--muted);}
+
+  @media (prefers-reduced-motion: reduce){ .scroll-cue .bar::after{animation:none;} }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+<canvas id="gl"></canvas>
+
+<header class="topbar">
+  <a class="mark" href="index.html">S.S.</a>
+  <nav class="nav-links">
+    <a href="works.html">Works</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+  <button class="nav-toggle" id="navToggle" aria-label="メニューを開く" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <span class="clock" id="clock"></span>
+</header>
+
+<nav class="nav-overlay" id="navOverlay">
+  <a href="index.html">Home</a>
+  <a href="works.html">Works</a>
+  <a href="about.html">About</a>
+  <a href="contact.html">Contact</a>
+</nav>
+
+<main>
+  <section class="hero" id="hero">
+    <div class="reveal-layer"><div class="reveal-image"></div></div>
+    <p class="eyebrow">Web Designer — Portfolio 2026</p>
+    <h1 class="hero-title">
+      <span class="line"><span>SAKI</span></span>
+      <span class="line italic"><span>SUZUKI</span></span>
+    </h1>
+    <p class="hero-sub">画面の中でしか成立しない体験をつくる。UI、インタラクション、そしてそれを動かすコードまで。</p>
+    <div class="scroll-cue"><div class="bar"></div>Scroll</div>
+  </section>
+
+  <section class="marquee-strip">
+    <div class="marquee-track">
+      <span>UI / UX</span><span>—</span><span>INTERACTION</span><span>—</span><span>FRONT-END</span><span>—</span><span>WEBGL</span><span>—</span>
+      <span>UI / UX</span><span>—</span><span>INTERACTION</span><span>—</span><span>FRONT-END</span><span>—</span><span>WEBGL</span><span>—</span>
+    </div>
+  </section>
+
+  <section class="statement" id="statement">
+    <span class="index">01 / 04 — Approach</span>
+    <p class="statement-text">画面は紙じゃない。<br>触れて、応答して、<em>初めて</em>デザインになる。</p>
+  </section>
+
+  <footer class="foot">
+    <span>© 2026 Saki Suzuki — Web Designer</span>
+    <a href="mailto:sakisuzuki89@gmail.com">sakisuzuki89@gmail.com</a>
+    <span>Tokyo, Japan</span>
+  </footer>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+
+<script>
+(function(){
+  /* ---------- mobile nav ---------- */
+  const btn = document.getElementById('navToggle');
+  const overlay = document.getElementById('navOverlay');
+  btn.addEventListener('click', () => {
+    const open = document.body.classList.toggle('menu-open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  overlay.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    document.body.classList.remove('menu-open');
+    btn.setAttribute('aria-expanded', 'false');
+  }));
+
+  /* ---------- shared setup ---------- */
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- clock ---------- */
+  const clockEl = document.getElementById('clock');
+  function tickClock(){
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    clockEl.textContent = `TOKYO — ${h}:${m}`;
+  }
+  tickClock();
+  setInterval(tickClock, 15000);
+
+  /* ---------- three.js ---------- */
+  const canvas = document.getElementById('gl');
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias:true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 100);
+  camera.position.set(1.1, 0, 6);
+
+  const geo = new THREE.IcosahedronGeometry(1.8, 1);
+  const wireGeo = new THREE.WireframeGeometry(geo);
+  const wireMat = new THREE.LineBasicMaterial({ color: 0xf2f1ed, transparent:true, opacity:0.5 });
+  const wire = new THREE.LineSegments(wireGeo, wireMat);
+  scene.add(wire);
+
+  const coreMat = new THREE.MeshBasicMaterial({ color: 0x0c0c0b, transparent:true, opacity:0.92 });
+  const core = new THREE.Mesh(geo, coreMat);
+  core.scale.setScalar(0.994);
+  scene.add(core);
+
+  wire.position.x = 1.1;
+  core.position.x = 1.1;
+
+  function onResize(){
+    const w = window.innerWidth, h = window.innerHeight;
+    renderer.setSize(w, h);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  window.addEventListener('resize', onResize);
+
+  let targetRotX = 0, targetRotY = 0;
+  if (!reduceMotion){
+    // デスクトップ：マウスパララックス
+    if (matchMedia('(pointer:fine)').matches){
+      window.addEventListener('mousemove', (e) => {
+        targetRotY = (e.clientX / window.innerWidth - 0.5) * 0.4;
+        targetRotX = (e.clientY / window.innerHeight - 0.5) * 0.4;
+      });
+    }
+    // スマホ／タブレット：タッチパララックス
+    if ('ontouchstart' in window){
+      window.addEventListener('touchmove', (e) => {
+        const t = e.touches[0];
+        targetRotY = (t.clientX / window.innerWidth - 0.5) * 0.5;
+        targetRotX = (t.clientY / window.innerHeight - 0.5) * 0.5;
+      }, { passive: true });
+      window.addEventListener('touchend', () => {
+        // 指を離したら中央にゆっくり戻す（animateループのイージングに任せる）
+        targetRotX = 0; targetRotY = 0;
+      }, { passive: true });
+    }
+  }
+
+  let baseRotY = 0;
+  function animate(){
+    requestAnimationFrame(animate);
+    if (!reduceMotion) baseRotY += 0.0016;
+    wire.rotation.y = baseRotY + targetRotY;
+    wire.rotation.x = 0.4 + targetRotX;
+    core.rotation.copy(wire.rotation);
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  /* ---------- gsap + lenis ---------- */
+  gsap.registerPlugin(ScrollTrigger);
+
+  if (!reduceMotion && window.Lenis){
+    const lenis = new Lenis({
+      duration: 1.15,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+    });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => lenis.raf(time * 1000));
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  gsap.to(wire.rotation, {
+    y: "+=3.4",
+    scrollTrigger: { trigger: "#hero", start: "top top", end: "bottom top", scrub: 1 }
+  });
+  gsap.to([wire.scale, core.scale], {
+    x: 0.55, y: 0.55, z: 0.55,
+    scrollTrigger: { trigger: "#hero", start: "top top", end: "bottom top", scrub: 1 }
+  });
+  gsap.to(".hero-title .line span", {
+    yPercent: -120, opacity: 0, stagger: 0.06,
+    scrollTrigger: { trigger: "#hero", start: "top top", end: "55% top", scrub: 1 }
+  });
+  gsap.to([".eyebrow", ".hero-sub", ".scroll-cue"], {
+    opacity: 0, y: -20,
+    scrollTrigger: { trigger: "#hero", start: "top top", end: "35% top", scrub: 1 }
+  });
+  gsap.to(".statement-text", {
+    opacity: 1,
+    scrollTrigger: { trigger: "#statement", start: "top 75%", end: "top 30%", scrub: 1 }
+  });
+
+  /* ---------- cursor / touch blob reveal ---------- */
+  const heroEl    = document.getElementById('hero');
+  const revealImg = document.querySelector('.reveal-image');
+  const isTouch   = 'ontouchstart' in window;
+  const isFine    = matchMedia('(pointer:fine)').matches;
+
+  function smoothClosedPath(pts){
+    const n = pts.length;
+    let d = `M ${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)} `;
+    for (let i = 0; i < n; i++){
+      const p0 = pts[(i - 1 + n) % n];
+      const p1 = pts[i];
+      const p2 = pts[(i + 1) % n];
+      const p3 = pts[(i + 2) % n];
+      const c1x = p1[0] + (p2[0] - p0[0]) / 6;
+      const c1y = p1[1] + (p2[1] - p0[1]) / 6;
+      const c2x = p2[0] - (p3[0] - p1[0]) / 6;
+      const c2y = p2[1] - (p3[1] - p1[1]) / 6;
+      d += `C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${p2[0].toFixed(1)} ${p2[1].toFixed(1)} `;
+    }
+    return d + 'Z';
+  }
+
+  function blobPath(cx, cy, baseR, points, t, vx, vy){
+    const speed    = Math.min(Math.hypot(vx, vy), 36);
+    const velAngle = Math.atan2(vy, vx);
+    const stretch  = (speed / 36) * 0.55;
+    const step     = (Math.PI * 2) / points;
+    const pts      = [];
+    for (let i = 0; i < points; i++){
+      const angle    = i * step;
+      const wobble   = Math.sin(angle * 3 + t * 0.0018) * 0.13
+                     + Math.sin(angle * 5 - t * 0.0011) * 0.07;
+      const dirBoost = 1 + stretch * Math.cos(angle - velAngle);
+      const r = Math.max(baseR * (1 + wobble) * dirBoost, baseR * 0.35);
+      pts.push([cx + Math.cos(angle) * r, cy + Math.sin(angle) * r]);
+    }
+    return smoothClosedPath(pts);
+  }
+
+  if (revealImg && !reduceMotion && (isFine || isTouch)){
+    let pointerX = 0, pointerY = 0, curX = 0, curY = 0, prevX = 0, prevY = 0;
+    let radius = 0, targetRadius = 0;
+    let active = false;
+
+    /* ---- 共通ハンドラ ---- */
+    function onStart(clientX, clientY, r_touch){
+      active = true;
+      targetRadius = r_touch; // マウス170 / タッチ200
+      const rect = heroEl.getBoundingClientRect();
+      pointerX = curX = prevX = clientX - rect.left;
+      pointerY = curY = prevY = clientY - rect.top;
+    }
+    function onMove(clientX, clientY){
+      const rect = heroEl.getBoundingClientRect();
+      pointerX = clientX - rect.left;
+      pointerY = clientY - rect.top;
+    }
+    function onEnd(){
+      targetRadius = 0;
+    }
+
+    /* ---- マウス（デスクトップ） ---- */
+    if (isFine){
+      heroEl.addEventListener('mouseenter', (e) => onStart(e.clientX, e.clientY, 170));
+      heroEl.addEventListener('mouseleave', onEnd);
+      heroEl.addEventListener('mousemove',  (e) => onMove(e.clientX, e.clientY));
+    }
+
+    /* ---- タッチ（スマホ／タブレット） ---- */
+    if (isTouch){
+      heroEl.addEventListener('touchstart', (e) => {
+        const t = e.touches[0];
+        onStart(t.clientX, t.clientY, 200); // 指は太いので大きめ
+      }, { passive: true });
+      heroEl.addEventListener('touchmove', (e) => {
+        const t = e.touches[0];
+        onMove(t.clientX, t.clientY);
+      }, { passive: true });
+      heroEl.addEventListener('touchend',    onEnd, { passive: true });
+      heroEl.addEventListener('touchcancel', onEnd, { passive: true });
+    }
+
+    /* ---- ループ ---- */
+    function revealLoop(time){
+      requestAnimationFrame(revealLoop);
+      if (!active) return;
+
+      prevX = curX; prevY = curY;
+      curX += (pointerX - curX) * 0.16;
+      curY += (pointerY - curY) * 0.16;
+      radius += (targetRadius - radius) * 0.1;
+
+      if (radius < 0.5 && targetRadius === 0){
+        active = false;
+        revealImg.style.clipPath = 'circle(0px at 50% 50%)';
+        return;
+      }
+
+      const vx   = curX - prevX;
+      const vy   = curY - prevY;
+      const path = blobPath(curX, curY, radius, 28, time, vx * 4, vy * 4);
+      revealImg.style.clipPath = `path('${path}')`;
+    }
+    requestAnimationFrame(revealLoop);
+  }
+})();
+</script>
+
+</body>
+</html>

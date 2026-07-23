@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Works — SAKI SUZUKI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="grain"></div>
+<canvas id="gl"></canvas>
+
+<header class="topbar">
+  <a class="mark" href="index.html">S.S.</a>
+  <nav class="nav-links">
+    <a href="works.html" class="current">Works</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+  <button class="nav-toggle" id="navToggle" aria-label="メニューを開く" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <span class="clock" id="clock"></span>
+</header>
+
+<nav class="nav-overlay" id="navOverlay">
+  <a href="index.html">Home</a>
+  <a href="works.html" class="current">Works</a>
+  <a href="about.html">About</a>
+  <a href="contact.html">Contact</a>
+</nav>
+
+<script>
+  (function(){
+    const btn = document.getElementById('navToggle');
+    const overlay = document.getElementById('navOverlay');
+    btn.addEventListener('click', () => {
+      const open = document.body.classList.toggle('menu-open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    overlay.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      document.body.classList.remove('menu-open');
+      btn.setAttribute('aria-expanded', 'false');
+    }));
+  })();
+</script>
+
+<main>
+  <section class="page-hero">
+    <p class="eyebrow reveal-up">Selected Works — 2021–2026</p>
+    <h1 class="page-title reveal-up">WORKS</h1>
+  </section>
+
+  <section class="section">
+    <div class="works-list">
+
+      <a href="#" class="work-row reveal-up">
+        <span class="work-index">01</span>
+        <span class="work-title">Lumen Studio</span>
+        <span class="work-meta">Brand Site — Web Design / UI — 2026</span>
+        <span class="work-arrow">↗</span>
+      </a>
+
+      <a href="#" class="work-row reveal-up">
+        <span class="work-index">02</span>
+        <span class="work-title">Northline Records</span>
+        <span class="work-meta">E-commerce — Web Design / Front-end — 2025</span>
+        <span class="work-arrow">↗</span>
+      </a>
+
+      <a href="#" class="work-row reveal-up">
+        <span class="work-index">03</span>
+        <span class="work-title">Aster Journal</span>
+        <span class="work-meta">Editorial Platform — UI / UX — 2025</span>
+        <span class="work-arrow">↗</span>
+      </a>
+
+      <a href="#" class="work-row reveal-up">
+        <span class="work-index">04</span>
+        <span class="work-title">Fable &amp; Co.</span>
+        <span class="work-meta">Product Launch — Interaction / WebGL — 2024</span>
+        <span class="work-arrow">↗</span>
+      </a>
+
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>© 2026 Saki Suzuki — Web Designer</span>
+    <a href="mailto:sakisuzuki89@gmail.com">sakisuzuki89@gmail.com</a>
+    <span>Tokyo, Japan</span>
+  </footer>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+
+<script>
+(function(){
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* clock */
+  const clockEl = document.getElementById('clock');
+  function tickClock(){
+    const now = new Date();
+    clockEl.textContent = `TOKYO — ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  }
+  tickClock(); setInterval(tickClock, 15000);
+
+  /* ambient wireframe background (no scroll-tied hero effects on this page) */
+  const canvas = document.getElementById('gl');
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias:true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 100);
+  camera.position.set(1.6, 0, 6.5);
+
+  const geo = new THREE.IcosahedronGeometry(1.6, 1);
+  const wire = new THREE.LineSegments(new THREE.WireframeGeometry(geo), new THREE.LineBasicMaterial({ color:0xf2f1ed, transparent:true, opacity:0.18 }));
+  wire.position.x = 2.2;
+  scene.add(wire);
+
+  window.addEventListener('resize', () => {
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+  });
+
+  function animate(){
+    requestAnimationFrame(animate);
+    if (!reduceMotion){ wire.rotation.y += 0.0011; wire.rotation.x += 0.0006; }
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  /* lenis + gsap scroll reveal */
+  gsap.registerPlugin(ScrollTrigger);
+  if (!reduceMotion && window.Lenis){
+    const lenis = new Lenis({ duration: 1.1, smoothWheel: true });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => lenis.raf(time * 1000));
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  gsap.utils.toArray('.reveal-up').forEach((el, i) => {
+    gsap.to(el, {
+      opacity: 1, y: 0, duration: 0.9, ease: 'power2.out',
+      delay: reduceMotion ? 0 : Math.min(i * 0.04, 0.3),
+      scrollTrigger: { trigger: el, start: 'top 90%' }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
